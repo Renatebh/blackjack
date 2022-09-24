@@ -16,6 +16,14 @@ h1 {
 .button-container {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: start;
   height: 400px;
+}
+
+.hidden {
+  display: none;
+}
+
+.decks {
+  display: flex;
 }
