@@ -10,7 +10,7 @@ import "./App.css";
 // import { randomIntFromInterval } from "./hooks/randomNumber";
 // import DisplayDealerDeck from "./components/Deck/DisplayDealerDeck";
 import StartMenu from "./components/Start/StartMenu";
-import GameBoard from "../src/components/Battle/GameBoard.jsx";
+import GameBoard from "../src/components/Game/GameBoard.jsx";
 
 const App = () => {
   // const [name, setName] = useState("");

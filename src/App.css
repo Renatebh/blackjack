@@ -24,6 +24,7 @@ h1 {
   display: none;
 }
 
-.decks {
+.your-cards,
+.dealer-cards {
   display: flex;
 }

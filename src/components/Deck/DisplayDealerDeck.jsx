@@ -20,4 +20,27 @@ const DisplayDealerDeck = () => {
   );
 };
 
-export default DisplayDealerDeck;
+// export default DisplayDealerDeck;
+//Del ut kort
+// const dealCards = () => {
+//   setActive(true);
+//   // sumCards();
+// };
+
+// Sum your og dealer hand
+
+// const sumCards = () => {
+//   for (let i = 0; i < hand.length; i++) {
+//     yourScore += hand[i].value;
+//   }
+//   for (let i = 0; i < dealerHand.length; i++) {
+//     dealerScore += dealerHand[i].value;
+//   }
+//   console.log("your score", yourScore);
+//   // console.log("dealer score", dealerScore);
+//   // if (yourScore >= 21) {
+//   //   setButton(true);
+//   // }
+//   setYourSum(yourScore);
+//   setDealerSum(dealerScore);
+// };
