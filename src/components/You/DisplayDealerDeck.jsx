@@ -1,6 +1,6 @@
 import React from "react";
-import Decks from "./Decks";
-import { randomDealerArray } from "./RandomDeckArray";
+import Decks from "../Deck/Decks";
+import { randomDealerArray } from "../Deck/RandomDeckArray";
 
 const DisplayDealerDeck = () => {
   return (

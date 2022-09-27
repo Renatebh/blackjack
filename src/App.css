@@ -27,4 +27,5 @@ h1 {
 .your-cards,
 .dealer-cards {
   display: flex;
+  gap: 1rem;
 }

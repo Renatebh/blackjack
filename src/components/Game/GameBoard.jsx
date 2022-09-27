@@ -1,82 +1,138 @@
 import React, { useState, useEffect } from "react";
 import "../../App.css";
 import PrimaryButton from "../Buttons/PrimaryButton";
-import {
-  randomDealerArray,
-  randomDeckArray as hand,
-  randomDeckArray,
-} from "../Deck/RandomDeckArray";
 import { deckArray } from "../Deck/DeckArray";
 import { randomIntFromInterval } from "../../hooks/randomNumber";
 import Decks from "../Deck/Decks";
 import { calculateScore } from "../../hooks/calculateScore";
+import backCard from "../../image/BACK.png";
 
 const GameBoard = () => {
   const [name, setName] = useState("");
-  const [hand, setHand] = useState(randomDeckArray);
-  const [dealerHand, setDealerHand] = useState(randomDealerArray);
+  const [playerHand, setPlayerHand] = useState([]);
+  const [dealerHand, setDealerHand] = useState([]);
 
-  const [yourSum, setYourSum] = useState(0);
+  const [playerSum, setPlayerSum] = useState(0);
   const [dealerSum, setDealerSum] = useState(0);
+
   const [message, setMessage] = useState("");
+  const [dealersTurn, setDealersTurn] = useState(false);
   const [totalScore, setTotalScore] = useState(0);
-  const [button, setButton] = useState(false);
-  const [newHand, setNewHand] = useState([]);
+
+  const [button, setButton] = useState(true);
+  const [dealButton, setDealButton] = useState();
+
+  let playerScore = calculateScore(playerHand);
+  let dealerScore = calculateScore(dealerHand);
 
   useEffect(() => {
     const userName = localStorage.getItem("username");
     if (userName) {
       setName(userName);
-      console.log(userName);
+      // console.log(userName);
     }
   }, []);
 
-  let playerScore = calculateScore(hand);
-  let dealerScore = calculateScore(dealerHand);
-
-  console.log("din sum", yourSum);
-  console.log("dealer sum", dealerSum);
-
   useEffect(() => {
     setDealerSum(dealerScore);
-    setYourSum(playerScore);
-  });
+    setPlayerSum(playerScore);
+    checkAce();
+  }, [playerScore, dealerScore]);
 
-  // Hit button
+  // CHECK ACE
+  const checkAce = () => {
+    console.log("player", playerScore);
+    playerHand.forEach((card) => {
+      if (playerScore > 20 && card.card === "A") {
+        setPlayerSum(playerScore - 10);
+      }
+    });
+  };
+
+  // DEAL CARDS
+  const dealCards = () => {
+    setMessage("");
+    setDealersTurn(false);
+    let randomDealerCard = [];
+    for (let i = 0; i < 1; i++) {
+      let randomNumber = Math.floor(Math.random() * deckArray.length);
+      randomDealerCard.push(deckArray[randomNumber]);
+      setDealerHand(randomDealerCard);
+    }
+
+    let randomPlayerCard = [];
+    for (let i = 0; i < 2; i++) {
+      let randomNumber = Math.floor(Math.random() * deckArray.length);
+      randomPlayerCard.push(deckArray[randomNumber]);
+      setPlayerHand(randomPlayerCard);
+    }
+    setButton(false);
+    setDealButton(true);
+  };
+
+  // HIT BUTTON
   const handleHit = () => {
     const rndInt = randomIntFromInterval(0, 51);
-    setHand((hand) => [...hand, deckArray[rndInt[1]]]);
+    setPlayerHand((playerHand) => [...playerHand, deckArray[rndInt[1]]]);
 
-    const newPlayerCards = [...hand, deckArray[rndInt[1]]];
-    const newPlayerScore = calculateScore(newPlayerCards);
-    setYourSum(newPlayerScore);
+    const newPlayerCards = [...playerHand, deckArray[rndInt[1]]];
+    let newPlayerScore = calculateScore(newPlayerCards);
 
+    for (let i = 0; i < newPlayerCards.length; i++) {
+      if (newPlayerScore >= 11 && newPlayerCards[i].card === "A") {
+        newPlayerScore -= 10;
+        setPlayerSum(newPlayerScore);
+      }
+      if (newPlayerCards[i].card === "A") {
+        newPlayerScore -= 10;
+        setPlayerSum(newPlayerScore);
+      }
+      if (newPlayerCards[0].card === "A" && newPlayerCards[1].card === "A") {
+        newPlayerScore -= 10;
+        setPlayerSum(newPlayerScore);
+      }
+    }
+    checkAce(newPlayerScore);
+    setPlayerSum(newPlayerScore);
+    console.log(newPlayerScore);
     if (newPlayerScore > 21) {
       setMessage("You lose");
+      setDealButton(false);
+      setButton(true);
     }
   };
 
-  // Sjekke hold
-  const handleHold = () => {
-    const rndInt = randomIntFromInterval(0, 51);
-    const newDealerCards = [...dealerHand, deckArray[rndInt[1]]];
-    const newDealerScore = calculateScore(newDealerCards);
-    console.log("SCORE", dealerScore);
+  // HOLD BUTTON
+  useEffect(() => {
+    if (dealersTurn === true) {
+      let newDealerCards = dealerHand;
+      let newDealerScore = dealerScore;
 
-    if (dealerScore < 17) {
-      setDealerHand((dealerHand) => [...dealerHand, deckArray[rndInt[0]]]);
-      setDealerSum(newDealerScore);
+      if (newDealerScore < 17) {
+        const rndInt = randomIntFromInterval(0, 51);
+        newDealerCards = [...dealerHand, deckArray[rndInt[0]]];
+        setDealerHand((dealerHand) => [...dealerHand, deckArray[rndInt[0]]]);
+        newDealerScore = calculateScore(newDealerCards);
+      }
+
+      if (newDealerScore === 21) {
+        setMessage("You lose!");
+      } else if (newDealerScore > 21) {
+        setMessage("You win!");
+      } else if (newDealerScore < playerScore) {
+        setMessage("You win!");
+      } else if (newDealerScore === playerScore) {
+        setMessage("It's a tie!");
+      } else if (newDealerScore > playerScore) {
+        setMessage("You lose!");
+      }
     }
-    console.log("NEW SCORE", newDealerScore);
-    console.log(dealerHand);
+  });
 
-    if (newDealerScore > 21) {
-      setMessage("You win!");
-    } else if (yourSum == newDealerScore) {
-      setMessage("Tie!");
-    } else if (yourSum < newDealerScore) {
-      setMessage("You Lose!");
-    } else return;
+  const handleHold = () => {
+    setDealersTurn(true);
+    setButton(true);
+    setDealButton(false);
   };
 
   return (
@@ -90,16 +146,19 @@ const GameBoard = () => {
       <div className="main-container">
         <div>
           <h2>
-            You're hand <span className="your-sum">{yourSum}</span>
+            PLAYER <span className="your-sum">{playerSum}</span>
           </h2>
 
           {/* <div className={active ? "your-cards" : "hidden"}>
-            {<DisplayDeck /> }
+            <PrimaryButton text="Deal" />
           </div> */}
           <div className="your-cards">
-            {hand.map((index, value) => {
+            {playerHand.map((index, value) => {
               return (
-                <Decks key={value} card={index.card} suits={index.suits} />
+                <Decks
+                  key={value}
+                  image={index.image} /*card={index.card} suits={index.suits} */
+                />
               );
             })}
           </div>
@@ -108,25 +167,35 @@ const GameBoard = () => {
           <p>
             Total score:<span>{totalScore}</span>
           </p>
-          <div>
+          <div className="button-box">
             <PrimaryButton disableBtn={button} text="Hit" onClick={handleHit} />
-            <PrimaryButton text="Hold" onClick={handleHold} />
-          </div>
-          <div>
-            {/* <PrimaryButton text="Deal Cards" onClick={dealCards} /> */}
-            <PrimaryButton text="Finish" />
+            <PrimaryButton
+              disableBtn={button}
+              text="Hold"
+              onClick={handleHold}
+            />
+            <PrimaryButton
+              disableBtn={dealButton}
+              text="Deal Cards"
+              onClick={dealCards}
+            />
           </div>
         </div>
+
         <div>
           <h2>
-            Dealer's hand <span className="dealer-sum">{dealerSum}</span>
+            DEALER <span className="dealer-sum">{dealerSum}</span>
           </h2>
           <div className="dealer-cards">
             {dealerHand.map((index, value) => {
               return (
-                <Decks key={value} card={index.card} suits={index.suits} />
+                <Decks
+                  key={value}
+                  image={index.image} /*card={index.card} suits={index.suits} */
+                />
               );
             })}
+            <img src={backCard} />
           </div>
         </div>
       </div>
