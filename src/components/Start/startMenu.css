@@ -1,7 +1,43 @@
-.main {
+.start-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 99vw;
-  height: 30vh;
+  justify-content: flex-start;
+  width: 100vw;
+  height: 100vh;
+  background-image: url("https://cdn.pixabay.com/photo/2022/06/13/22/32/casino-7260767_960_720.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
 }
+
+.header-blackjack {
+  font-size: 4rem;
+  text-transform: uppercase;
+  font-family: "Times New Roman", Times, serif;
+}
+
+.start-button {
+  width: 15rem;
+  height: 3.5rem;
+  border: none;
+  border-radius: 25px;
+  background-color: black;
+  color: rgb(244, 174, 108);
+  box-shadow: 10px 9px 31px -4px rgb(244, 174, 108);
+  font-weight: bold;
+  text-transform: uppercase;
+  margin-top: 3rem;
+}
+
+.name-input {
+  width: 15rem;
+  height: 2rem;
+  border: none;
+  border-radius: 5px;
+  margin: 3rem;
+  /* background-color: rgb(214, 214, 214); */
+}
+
+/* .name-input::placeholder {
+  color: rgb(244, 174, 108);
+} */

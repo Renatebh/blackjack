@@ -2,36 +2,65 @@ import React, { useState, useEffect } from "react";
 import "../../App.css";
 import PrimaryButton from "../Buttons/PrimaryButton";
 import { deckArray } from "../Deck/DeckArray";
-import { randomIntFromInterval } from "../../hooks/randomNumber";
+import { randomIntFromInterval } from "../Hooks/randomNumber";
 import Decks from "../Deck/Decks";
-import { calculateScore } from "../../hooks/calculateScore";
+import { calculateScore } from "../Hooks/calculateScore";
 import backCard from "../../image/BACK.png";
 
-const GameBoard = () => {
+const GameBoard = ({ onStartClick }) => {
   const [name, setName] = useState("");
   const [playerHand, setPlayerHand] = useState([]);
   const [dealerHand, setDealerHand] = useState([]);
-
   const [playerSum, setPlayerSum] = useState(0);
   const [dealerSum, setDealerSum] = useState(0);
-
   const [message, setMessage] = useState("");
   const [dealersTurn, setDealersTurn] = useState(false);
-  const [totalScore, setTotalScore] = useState(0);
-
   const [button, setButton] = useState(true);
   const [dealButton, setDealButton] = useState();
+  const [playerWins, setPlayerWins] = useState(0);
+  const [currentHighScore, setCurrentHighScore] = useState(0);
+  const [highScore, setHighScore] = useState(0);
 
   let playerScore = calculateScore(playerHand);
   let dealerScore = calculateScore(dealerHand);
 
+  // SAVE TO LOCALSTORAGE
+  const handleHighScoreList = () => {
+    setName(name);
+    setHighScore(highScore);
+    const highScoreList = JSON.parse(
+      window.localStorage.getItem("highScoreList") || "[]"
+    );
+
+    let highScoreArray = {
+      name: name,
+      score: highScore,
+    };
+    highScoreList.push(highScoreArray);
+    window.localStorage.setItem("highScoreList", JSON.stringify(highScoreList));
+  };
+
   useEffect(() => {
-    const userName = localStorage.getItem("username");
-    if (userName) {
-      setName(userName);
-      // console.log(userName);
+    const currentUser = localStorage.getItem("currentUser");
+    if (currentUser) {
+      setName(currentUser);
     }
   }, []);
+
+  const setNewHighScore = (currentHighScore) => {
+    const userName = window.localStorage.getItem("currentUser");
+    window.localStorage.getItem(userName);
+    const currentScore = window.localStorage.getItem(userName);
+    window.localStorage.setItem(
+      userName,
+      currentHighScore + parseInt(currentScore)
+    );
+    setHighScore(currentHighScore + parseInt(currentScore));
+  };
+
+  useEffect(() => {
+    setNewHighScore(currentHighScore);
+  }, [currentHighScore]);
 
   useEffect(() => {
     setDealerSum(dealerScore);
@@ -41,9 +70,8 @@ const GameBoard = () => {
 
   // CHECK ACE
   const checkAce = () => {
-    console.log("player", playerScore);
     playerHand.forEach((card) => {
-      if (playerScore > 20 && card.card === "A") {
+      if (playerScore > 21 && card.card === "A") {
         setPlayerSum(playerScore - 10);
       }
     });
@@ -87,14 +115,10 @@ const GameBoard = () => {
         newPlayerScore -= 10;
         setPlayerSum(newPlayerScore);
       }
-      if (newPlayerCards[0].card === "A" && newPlayerCards[1].card === "A") {
-        newPlayerScore -= 10;
-        setPlayerSum(newPlayerScore);
-      }
     }
     checkAce(newPlayerScore);
     setPlayerSum(newPlayerScore);
-    console.log(newPlayerScore);
+
     if (newPlayerScore > 21) {
       setMessage("You lose");
       setDealButton(false);
@@ -113,21 +137,23 @@ const GameBoard = () => {
         newDealerCards = [...dealerHand, deckArray[rndInt[0]]];
         setDealerHand((dealerHand) => [...dealerHand, deckArray[rndInt[0]]]);
         newDealerScore = calculateScore(newDealerCards);
-      }
-
-      if (newDealerScore === 21) {
-        setMessage("You lose!");
-      } else if (newDealerScore > 21) {
-        setMessage("You win!");
-      } else if (newDealerScore < playerScore) {
-        setMessage("You win!");
-      } else if (newDealerScore === playerScore) {
-        setMessage("It's a tie!");
-      } else if (newDealerScore > playerScore) {
-        setMessage("You lose!");
+      } else {
+        if (newDealerScore > 21) {
+          setMessage("You win!");
+          setPlayerWins(playerWins + 1);
+          setCurrentHighScore(playerSum);
+        } else if (newDealerScore < playerScore) {
+          setMessage("You win!");
+          setPlayerWins(playerWins + 1);
+          setCurrentHighScore(playerSum);
+        } else if (newDealerScore === playerScore) {
+          setMessage("It's a tie!");
+        } else if (newDealerScore > playerScore) {
+          setMessage("You lose!");
+        }
       }
     }
-  });
+  }, [dealerScore, dealersTurn]);
 
   const handleHold = () => {
     setDealersTurn(true);
@@ -137,21 +163,33 @@ const GameBoard = () => {
 
   return (
     <div>
-      <div className="header-container">
-        <p>Name: {name} </p>
-        <h1>Blackjack</h1>
-        <button>HighScore</button>
-      </div>
-      <p>Results:{message}</p>
       <div className="main-container">
-        <div>
+        <div className="header-container">
+          <h1>Blackjack</h1>
+        </div>
+        <div className="name-container">
+          <p>Name: {name} </p>
+          <p>Results:{message}</p>
+          <p>
+            Wins:<span>{playerWins}</span>
+          </p>
+          <p>
+            HighScore:<span>{highScore}</span>
+          </p>
+          <button
+            onClick={() => {
+              onStartClick();
+              handleHighScoreList();
+            }}
+          >
+            HighScore
+          </button>
+          <button>Finish</button>
+        </div>
+        <div className="player">
           <h2>
             PLAYER <span className="your-sum">{playerSum}</span>
           </h2>
-
-          {/* <div className={active ? "your-cards" : "hidden"}>
-            <PrimaryButton text="Deal" />
-          </div> */}
           <div className="your-cards">
             {playerHand.map((index, value) => {
               return (
@@ -164,25 +202,16 @@ const GameBoard = () => {
           </div>
         </div>
         <div className="button-container">
-          <p>
-            Total score:<span>{totalScore}</span>
-          </p>
-          <div className="button-box">
-            <PrimaryButton disableBtn={button} text="Hit" onClick={handleHit} />
-            <PrimaryButton
-              disableBtn={button}
-              text="Hold"
-              onClick={handleHold}
-            />
-            <PrimaryButton
-              disableBtn={dealButton}
-              text="Deal Cards"
-              onClick={dealCards}
-            />
-          </div>
+          <PrimaryButton disableBtn={button} text="Hit" onClick={handleHit} />
+          <PrimaryButton disableBtn={button} text="Hold" onClick={handleHold} />
+          <PrimaryButton
+            disableBtn={dealButton}
+            text="Deal Cards"
+            onClick={dealCards}
+          />
         </div>
 
-        <div>
+        <div className="dealer">
           <h2>
             DEALER <span className="dealer-sum">{dealerSum}</span>
           </h2>

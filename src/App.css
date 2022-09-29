@@ -1,31 +1,48 @@
-h1 {
+h1,
+h2 {
   text-align: center;
 }
 
 .header-container {
   display: flex;
-  justify-content: space-between;
-  margin: 1rem;
+  justify-content: center;
 }
 
 .main-container {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.name-container {
   display: flex;
   justify-content: space-evenly;
 }
 
 .button-container {
   display: flex;
-  flex-direction: column;
-  justify-content: start;
-  height: 400px;
+  justify-content: center;
+  width: 100%;
+  gap: 1rem;
 }
 
-.hidden {
+/* .hidden {
   display: none;
-}
+} */
 
 .your-cards,
 .dealer-cards {
   display: flex;
   gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.player,
+.dealer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
