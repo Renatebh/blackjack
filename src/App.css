@@ -1,3 +1,8 @@
+html {
+  width: 100%;
+  height: 100vh;
+}
+
 h1,
 h2 {
   text-align: center;
@@ -5,7 +10,9 @@ h2 {
 
 .header-container {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0rem 1rem;
 }
 
 .main-container {
@@ -14,11 +21,22 @@ h2 {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  background-image: radial-gradient(circle, rgb(8, 49, 92) 10%, black 90%);
+  color: lightblue;
+}
+
+.top-container {
+  display: flex;
+  justify-content: space-between;
+  margin-right: 1rem;
 }
 
 .name-container {
   display: flex;
-  justify-content: space-evenly;
+  margin-left: 1rem;
+}
+span {
+  margin-right: 1rem;
 }
 
 .button-container {
@@ -26,11 +44,8 @@ h2 {
   justify-content: center;
   width: 100%;
   gap: 1rem;
+  margin-top: 2rem;
 }
-
-/* .hidden {
-  display: none;
-} */
 
 .your-cards,
 .dealer-cards {
@@ -45,4 +60,48 @@ h2 {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  position: relative;
+}
+
+.btn-btn {
+  transition: 0.5s;
+  width: 100px;
+  height: 50px;
+  background: none;
+  font-size: 15px;
+  color: lightblue;
+  border: 3px solid lightblue;
+  margin-left: 1rem;
+  border-radius: 5px;
+  outline: none;
+  cursor: pointer;
+}
+
+.btn-btn:hover {
+  transition: 0.5s;
+  background: lightblue;
+  color: black;
+  box-shadow: 0px 0px 40px lightblue;
+}
+
+.message {
+  font-size: 54px;
+  font-weight: bold;
+  position: absolute;
+  color: greenyellow;
+  width: 20rem;
+  background-color: rgb(8, 49, 92);
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.lose-message {
+  font-size: 54px;
+  font-weight: bold;
+  position: absolute;
+  color: rgb(251, 0, 255);
+  width: 20rem;
+  background-color: rgb(8, 49, 92);
+  text-align: center;
+  text-transform: uppercase;
 }

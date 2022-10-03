@@ -5,7 +5,7 @@ import { deckArray } from "../Deck/DeckArray";
 import { randomIntFromInterval } from "../Hooks/randomNumber";
 import Decks from "../Deck/Decks";
 import { calculateScore } from "../Hooks/calculateScore";
-import backCard from "../../image/BACK.png";
+import backCard from "../../image/cardpurple.png";
 
 const GameBoard = ({ onStartClick }) => {
   const [name, setName] = useState("");
@@ -20,6 +20,7 @@ const GameBoard = ({ onStartClick }) => {
   const [playerWins, setPlayerWins] = useState(0);
   const [currentHighScore, setCurrentHighScore] = useState(0);
   const [highScore, setHighScore] = useState(0);
+  const [styleMessage, setStyleMessage] = useState(false);
 
   let playerScore = calculateScore(playerHand);
   let dealerScore = calculateScore(dealerHand);
@@ -104,27 +105,32 @@ const GameBoard = ({ onStartClick }) => {
     setPlayerHand((playerHand) => [...playerHand, deckArray[rndInt[1]]]);
 
     const newPlayerCards = [...playerHand, deckArray[rndInt[1]]];
-    let newPlayerScore = calculateScore(newPlayerCards);
+    playerScore = calculateScore(newPlayerCards);
 
-    for (let i = 0; i < newPlayerCards.length; i++) {
-      if (newPlayerScore >= 11 && newPlayerCards[i].card === "A") {
-        newPlayerScore -= 10;
-        setPlayerSum(newPlayerScore);
+    newPlayerCards.forEach((card) => {
+      if (playerScore > 17 && card.card === "A") {
+        playerScore -= 10;
+        // setPlayerSum((prevScore) => prevScore + playerScore);
       }
-      if (newPlayerCards[i].card === "A") {
-        newPlayerScore -= 10;
-        setPlayerSum(newPlayerScore);
-      }
-    }
-    checkAce(newPlayerScore);
-    setPlayerSum(newPlayerScore);
+      // setPlayerSum((prevScore) => playerScore);
+      return playerScore;
+    });
 
-    if (newPlayerScore > 21) {
+    console.log("NEW PLAYER SCORE", playerScore);
+
+    if (playerScore > 21) {
       setMessage("You lose");
       setDealButton(false);
       setButton(true);
+      setStyleMessage(false);
     }
+    // setPlayerSum(playerScore);
+    // setPlayerSum((prevScore) => prevScore + playerScore - 10);
   };
+
+  // useEffect(() => {
+  //   setPlayerSum(playerScore);
+  // }, [playerHand]);
 
   // HOLD BUTTON
   useEffect(() => {
@@ -142,14 +148,17 @@ const GameBoard = ({ onStartClick }) => {
           setMessage("You win!");
           setPlayerWins(playerWins + 1);
           setCurrentHighScore(playerSum);
+          setStyleMessage(true);
         } else if (newDealerScore < playerScore) {
           setMessage("You win!");
+          setStyleMessage(true);
           setPlayerWins(playerWins + 1);
           setCurrentHighScore(playerSum);
         } else if (newDealerScore === playerScore) {
           setMessage("It's a tie!");
         } else if (newDealerScore > playerScore) {
           setMessage("You lose!");
+          setStyleMessage(false);
         }
       }
     }
@@ -165,32 +174,38 @@ const GameBoard = ({ onStartClick }) => {
     <div>
       <div className="main-container">
         <div className="header-container">
-          <h1>Blackjack</h1>
+          <div className="name-container">
+            <p className="name">
+              Name:<span>{name}</span>
+            </p>
+            <p>{/* Wins:<span>{playerWins}||</span> */}</p>
+            <p>
+              Highscore:<span>{highScore}</span>
+            </p>
+          </div>
+          {<h1 className="header">Blackjack</h1>}
+          <div>
+            <button
+              className="btn-btn highscore"
+              onClick={() => {
+                onStartClick();
+                handleHighScoreList();
+              }}
+            >
+              HighScore
+            </button>
+            <button className="btn-btn finish">Finish</button>
+          </div>
         </div>
-        <div className="name-container">
-          <p>Name: {name} </p>
-          <p>Results:{message}</p>
-          <p>
-            Wins:<span>{playerWins}</span>
-          </p>
-          <p>
-            HighScore:<span>{highScore}</span>
-          </p>
-          <button
-            onClick={() => {
-              onStartClick();
-              handleHighScoreList();
-            }}
-          >
-            HighScore
-          </button>
-          <button>Finish</button>
-        </div>
+
         <div className="player">
           <h2>
             PLAYER <span className="your-sum">{playerSum}</span>
           </h2>
           <div className="your-cards">
+            <p className={`${styleMessage ? "message" : "lose-message"}`}>
+              {message}
+            </p>
             {playerHand.map((index, value) => {
               return (
                 <Decks

@@ -24,13 +24,17 @@ const HighScoreList = ({ onStartClick }) => {
   return (
     <div>
       <div className="wrapper">
-        <h1>HIGHSCORE</h1>
-        <button onClick={onStartClick}>Play</button>
-        <p>Innlogget: {currentUser}</p>
+        <h1 className="header">HIGHSCORE</h1>
+        <button className="play-btn" onClick={onStartClick}>
+          Play
+        </button>
+        {/* <p className="current-user">Innlogget: {currentUser}</p> */}
         <div className="highscore-list">
-          {highScoreList.map((index, value) => {
-            return <List key={value} name={index.name} score={index.score} />;
-          })}
+          {highScoreList
+            .filter((_, index) => index < 10)
+            .map((index, value) => {
+              return <List key={value} name={index.name} score={index.score} />;
+            })}
         </div>
       </div>
     </div>

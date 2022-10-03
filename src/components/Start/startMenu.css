@@ -2,12 +2,16 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
   width: 100vw;
   height: 100vh;
-  background-image: url("https://cdn.pixabay.com/photo/2022/06/13/22/32/casino-7260767_960_720.jpg");
+  background-image: radial-gradient(circle, rgb(8, 49, 92) 10%, black 90%);
+  color: lightblue;
+  /* background-image: url(../../image/inline_image_preview.jpg);
+  background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
+  background: center, no-repeat, cover; */
 }
 
 .header-blackjack {
@@ -17,16 +21,25 @@
 }
 
 .start-button {
-  width: 15rem;
-  height: 3.5rem;
-  border: none;
-  border-radius: 25px;
-  background-color: black;
-  color: rgb(244, 174, 108);
-  box-shadow: 10px 9px 31px -4px rgb(244, 174, 108);
-  font-weight: bold;
   text-transform: uppercase;
   margin-top: 3rem;
+  width: 15rem;
+  padding: 1rem;
+  border-radius: 5px;
+  color: lightblue;
+  border: 3px solid lightblue;
+  background-color: transparent;
+  font-weight: bolder;
+  text-transform: uppercase;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+}
+
+.start-button:hover {
+  transition: 0.5s;
+  background: lightblue;
+  color: black;
+  box-shadow: 0px 0px 40px lightblue;
 }
 
 .name-input {
@@ -34,7 +47,7 @@
   height: 2rem;
   border: none;
   border-radius: 5px;
-  margin: 3rem;
+  margin-top: 2rem;
   /* background-color: rgb(214, 214, 214); */
 }
 
