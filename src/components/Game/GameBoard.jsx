@@ -110,13 +110,14 @@ const GameBoard = ({ onStartClick }) => {
     newPlayerCards.forEach((card) => {
       if (playerScore > 17 && card.card === "A") {
         playerScore -= 10;
-        // setPlayerSum((prevScore) => prevScore + playerScore);
+        // setPlayerSum((prevScore) => prevScore + playerScore - 10);
+        setPlayerSum(playerScore - 10);
       }
       // setPlayerSum((prevScore) => playerScore);
-      return playerScore;
+      // return setPlayerSum(playerScore - 10);
     });
 
-    console.log("NEW PLAYER SCORE", playerScore);
+    console.log("PLAYER SCORE", playerScore);
 
     if (playerScore > 21) {
       setMessage("You lose");
@@ -124,8 +125,8 @@ const GameBoard = ({ onStartClick }) => {
       setButton(true);
       setStyleMessage(false);
     }
-    // setPlayerSum(playerScore);
-    // setPlayerSum((prevScore) => prevScore + playerScore - 10);
+
+    setPlayerSum((prevScore) => prevScore, playerScore - 10);
   };
 
   // useEffect(() => {
